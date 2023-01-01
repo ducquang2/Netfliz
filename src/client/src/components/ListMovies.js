@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import AliceCarousel from "react-alice-carousel";
 import "react-alice-carousel/lib/alice-carousel.css";
 import { Text } from "./Text";
@@ -13,12 +13,12 @@ const responsive = {
   1024: { items: 5 },
 };
 
-const ListMovies = ({ title, list_movies_data }) => {
-  const [listMovies, setlistMovies] = useState([]);
+const ListMovies = ({ title, list_movies_data = [] }) => {
+  const [listMovies, setlistMovies] = React.useState([]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     let movies_input = [];
-    if (list_movies_data === undefined)
+    if (list_movies_data === [])
       movies_input = [
         "Smile - Movie Poster 1",
         "House of the Dragon - TV Poster 1",
@@ -27,8 +27,6 @@ const ListMovies = ({ title, list_movies_data }) => {
         "Creed 3 - Movie Poster 2",
       ];
     else movies_input = list_movies_data;
-
-    console.log(movies_input);
 
     setlistMovies(
       Object.values(movies_input).map((item) => {

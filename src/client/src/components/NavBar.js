@@ -133,7 +133,11 @@ const NavBar = ({ allowSearch = true }) => {
           <div></div>
         )}
       </div>
-      <ul className={`menu-nav w-full ${navbarOpen ? "show-menu" : "hidden"}`}>
+      <ul
+        className={`menu-nav w-full ${
+          navbarOpen ? "max-[800px]:show-menu" : "hidden"
+        }`}
+      >
         <li className="menu-item">
           <div className="flex space-x-2 items-center">
             <FontAwesomeIcon icon={faHome} inverse size="1x" />
