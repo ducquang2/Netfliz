@@ -1,54 +1,55 @@
-import React from "react";
-import { Button, Input, Text, NavBar, Footer, Card } from "../components";
-import ProfileImage from "../assets/images/profile.png";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React from 'react'
+import { Button, Input, Text, NavBar, Footer, Card } from '../components'
+import ProfileImage from '../assets/images/profile.png'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function ProfilePage() {
-  const navigate = useNavigate();
-  const [info, setInfo] = React.useState({});
-  const [infoChange, setInfoChange] = React.useState({});
-  const [isChanging, setIsChanging] = React.useState(false);
+  const navigate = useNavigate()
+  const [info, setInfo] = React.useState({})
+  const [infoChange, setInfoChange] = React.useState({})
+  const [isChanging, setIsChanging] = React.useState(false)
 
-  const uid = localStorage.getItem("uid");
-  const [isChangingPassword, setIsChangingPassword] = React.useState(false);
+  const uid = localStorage.getItem('uid')
+  const [isChangingPassword, setIsChangingPassword] = React.useState(false)
   const [password, setPassword] = React.useState({
     uid,
-    oldPass: "",
-    newPass: "",
-    newrePass: "",
-  });
+    oldPass: '',
+    newPass: '',
+    newrePass: '',
+  })
 
   const logOut = () => {
-    localStorage.removeItem("uid");
+    localStorage.removeItem('uid')
+    localStorage.removeItem('per')
     navigate({
-      pathname: "/",
-    });
-  };
+      pathname: '/',
+    })
+  }
 
   const saveSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     axios
       .post(`${process.env.REACT_APP_ENDPOINT}userinfo/changeInfo`, {
         ...info,
       })
       .then((res) => {
-        console.log(res.data.data);
-        setInfo(res.data.data);
-        setInfoChange(res.data.data);
-        setIsChanging(false);
-      });
-  };
+        console.log(res.data.data)
+        setInfo(res.data.data)
+        setInfoChange(res.data.data)
+        setIsChanging(false)
+      })
+  }
   const savePassSubmit = async (e) => {
     if (
       password.newPass !== password.newrePass ||
-      password.oldPass === "" ||
-      password.newPass === ""
+      password.oldPass === '' ||
+      password.newPass === ''
     ) {
-      return;
+      return
     }
     axios
       .post(`${process.env.REACT_APP_ENDPOINT}users/changePass`, {
@@ -57,27 +58,27 @@ function ProfilePage() {
         newpassword: password.newPass,
       })
       .then((res) => {
-        console.log(res.data.result);
+        console.log(res.data.result)
         if (res.data.result) {
-          alert("Change password successed");
-          logOut();
+          alert('Change password successed')
+          logOut()
         } else {
-          alert("please try again");
+          alert('please try again')
         }
-        setIsChanging(false);
-        setIsChangingPassword(false);
-      });
-  };
+        setIsChanging(false)
+        setIsChangingPassword(false)
+      })
+  }
   React.useEffect(() => {
     axios
       .post(`${process.env.REACT_APP_ENDPOINT}userinfo/get`, {
         uid,
       })
       .then((res) => {
-        setInfo(res.data.data);
-        setInfoChange(res.data.data);
-      });
-  }, []);
+        setInfo(res.data.data)
+        setInfoChange(res.data.data)
+      })
+  }, [])
   const rmMovie = async (vid) => {
     axios
 
@@ -86,22 +87,22 @@ function ProfilePage() {
         vid: vid,
       })
       .then((res) => {
-        if (res.data.messages === "success") {
-          setInfo(res.data.data);
-          setInfoChange(res.data.data);
-          toast.success("Removed successfully", {
+        if (res.data.messages === 'success') {
+          setInfo(res.data.data)
+          setInfoChange(res.data.data)
+          toast.success('Removed successfully', {
             autoClose: 2000,
-            position: "bottom-left",
-          });
+            position: 'bottom-left',
+          })
         } else {
-          toast.error("Please try again", {
+          toast.error('Please try again', {
             autoClose: 2000,
-            position: "bottom-left",
-          });
+            position: 'bottom-left',
+          })
         }
-      });
+      })
     //window.location.href="/profile"
-  };
+  }
 
   return (
     <div className="App bg-[#082032]">
@@ -123,7 +124,7 @@ function ProfilePage() {
                   isHeader={false}
                   customTheme="text-white font-button"
                   style={{
-                    fontSize: "calc(.6rem + 1.5vw)",
+                    fontSize: 'calc(.6rem + 1.5vw)',
                   }}
                 />
                 <Text
@@ -131,7 +132,7 @@ function ProfilePage() {
                   isHeader={false}
                   customTheme="text-white font-button"
                   style={{
-                    fontSize: "calc(.6rem + 1.5vw)",
+                    fontSize: 'calc(.6rem + 1.5vw)',
                   }}
                 />
                 <Text
@@ -139,7 +140,7 @@ function ProfilePage() {
                   isHeader={false}
                   customTheme="text-white font-button"
                   style={{
-                    fontSize: "calc(.6rem + 1.5vw)",
+                    fontSize: 'calc(.6rem + 1.5vw)',
                   }}
                 />
               </div>
@@ -152,7 +153,7 @@ function ProfilePage() {
                       text="Name:"
                       customTheme="text-white font-button whitespace-nowrap"
                       style={{
-                        fontSize: "calc(.6rem + 1.5vw)",
+                        fontSize: 'calc(.6rem + 1.5vw)',
                       }}
                     />
                   </div>
@@ -170,7 +171,7 @@ function ProfilePage() {
                       text="Date of birth:"
                       customTheme="text-white font-button whitespace-nowrap"
                       style={{
-                        fontSize: "calc(.6rem + 1.5vw)",
+                        fontSize: 'calc(.6rem + 1.5vw)',
                       }}
                     />
                   </div>
@@ -189,7 +190,7 @@ function ProfilePage() {
                       text="ID:"
                       customTheme="text-white font-button whitespace-nowrap"
                       style={{
-                        fontSize: "calc(.6rem + 1.5vw)",
+                        fontSize: 'calc(.6rem + 1.5vw)',
                       }}
                     />
                   </div>
@@ -216,7 +217,7 @@ function ProfilePage() {
                     inputTheme="h-fit p-1 max-w-xl w-full border-2 rounded-xl "
                     containerTheme="w-fit justify-center"
                     id="name_input"
-                    type={"password"}
+                    type={'password'}
                     valuetext={password.oldPass}
                     onChange={(e) =>
                       setPassword({ ...password, oldPass: e.target.value })
@@ -234,7 +235,7 @@ function ProfilePage() {
                     id="name_input"
                     inputTheme="h-fit p-1 max-w-xl w-full border-2 rounded-xl "
                     containerTheme="w-fit justify-center"
-                    type={"password"}
+                    type={'password'}
                     valuetext={password.newPass}
                     onChange={(e) =>
                       setPassword({ ...password, newPass: e.target.value })
@@ -271,7 +272,7 @@ function ProfilePage() {
                 <a
                   className="text-white w-fit hover:bg-pink-600 font-button cursor-pointer"
                   style={{
-                    fontSize: "calc(.8rem + 1vw)",
+                    fontSize: 'calc(.8rem + 1vw)',
                   }}
                   onClick={(e) => setIsChanging(true)}
                 >
@@ -280,7 +281,7 @@ function ProfilePage() {
                 <a
                   className="text-white w-fit hover:bg-pink-600 font-button cursor-pointer"
                   style={{
-                    fontSize: "calc(.8rem + 1vw)",
+                    fontSize: 'calc(.8rem + 1vw)',
                   }}
                   onClick={(e) => setIsChangingPassword(true)}
                 >
@@ -293,8 +294,8 @@ function ProfilePage() {
                 <Button
                   theme="bg-pink-600 rounded-none w-24 h-10"
                   onClick={(e) => {
-                    setIsChanging(false);
-                    setInfo(infoChange);
+                    setIsChanging(false)
+                    setInfo(infoChange)
                   }}
                 >
                   <p className="text-2xl font-button text-black">CANCEL</p>
@@ -312,13 +313,13 @@ function ProfilePage() {
                 <Button
                   theme="bg-[#CD0574] ml-auto w-24 h-12 rounded-none flex justify-center items-center"
                   onClick={(e) => {
-                    setIsChangingPassword(false);
+                    setIsChangingPassword(false)
                     setPassword({
                       uid,
-                      oldPass: "",
-                      newPass: "",
-                      newrePass: "",
-                    });
+                      oldPass: '',
+                      newPass: '',
+                      newrePass: '',
+                    })
                   }}
                 >
                   <p className="text-2xl font-button text-black">CANCEL</p>
@@ -326,7 +327,7 @@ function ProfilePage() {
                 <Button
                   theme="bg-[#CD0574] ml-auto w-24 h-12 rounded-none flex justify-center items-center"
                   onClick={(e) => {
-                    savePassSubmit(e);
+                    savePassSubmit(e)
                   }}
                 >
                   <p className="text-2xl font-button text-black">SAVE</p>
@@ -351,11 +352,11 @@ function ProfilePage() {
                     vid={each.vid}
                     canEdit={true}
                     onTrashClick={(e) => {
-                      rmMovie(each.vid);
+                      rmMovie(each.vid)
                     }}
-                    className={"max-w-xs mt-8"}
+                    className={'max-w-xs mt-8'}
                   />
-                );
+                )
               })}
           </div>
           <Button
@@ -369,11 +370,11 @@ function ProfilePage() {
       <ToastContainer />
       <Footer />
     </div>
-  );
+  )
 }
 export default {
   routeProps: {
-    path: "/profile",
+    path: '/profile',
     main: ProfilePage,
   },
-};
+}
