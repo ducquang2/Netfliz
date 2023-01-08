@@ -8,6 +8,7 @@ router.post('/register', userC.registerUser, () => {
 router.post('/login', userC.loginUser, () => {
   next()
 })
+router.get('/authen/:token', userC.mailAuthorize, () => next())
 router.post('/authen', userC.userAuthentication, () => {
   next()
 })

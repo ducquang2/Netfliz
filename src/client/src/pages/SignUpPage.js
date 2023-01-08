@@ -1,55 +1,58 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { Button, Input, Text, Form, NavBar, Footer } from "../components";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React, { useState } from 'react'
+import axios from 'axios'
+import { Button, Input, Text, Form, NavBar, Footer } from '../components'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function SignUpPage() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [repassword, setRepassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [repassword, setRepassword] = useState('')
+  const [email, setEmail] = useState('')
 
   const submitClickHandler = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    console.log(`${username} - ${password}`);
-    console.log("clicked");
+    console.log(`${username} - ${password}`)
+    console.log('clicked')
     if (repassword === password) {
       axios
         .post(`${process.env.REACT_APP_ENDPOINT}users/register`, {
           username,
           password,
           email,
-          permission: "false",
+          permission: 'false',
         })
         .then((res) => {
-          console.log(res.data.message);
-          if (res.data.message === "success") {
-            toast.success("Register account succeed", { autoClose: 2000 });
+          console.log(res.data.message)
+          if (res.data.message === 'success') {
+            toast.success(
+              'Register account succeed, please verify your account',
+              { autoClose: 2000 },
+            )
             setTimeout(() => {
-              window.location.href = "/LogIn";
-            }, 3000);
+              window.location.href = '/LogIn'
+            }, 3000)
           } else {
-            toast.error("Opps!!" + res.data.message, { autoClose: 2000 });
+            toast.error('Opps!!' + res.data.message, { autoClose: 2000 })
           }
-        });
+        })
     } else {
-      toast.warning("Please check password again", { autoClose: 2000 });
+      toast.warning('Please check password again', { autoClose: 2000 })
     }
-  };
+  }
   const usernameChangeHandler = (event) => {
-    setUsername(event.target.value);
-  };
+    setUsername(event.target.value)
+  }
   const passwordChangeHandler = (event) => {
-    setPassword(event.target.value);
-  };
+    setPassword(event.target.value)
+  }
   const emailChangeHandler = (event) => {
-    setEmail(event.target.value);
-  };
+    setEmail(event.target.value)
+  }
   const repasswordChangeHandler = (event) => {
-    setRepassword(event.target.value);
-  };
+    setRepassword(event.target.value)
+  }
 
   return (
     <div className="bg-local bg-login-background">
@@ -109,12 +112,12 @@ function SignUpPage() {
       <ToastContainer />
       <Footer />
     </div>
-  );
+  )
 }
 
 export default {
   routeProps: {
-    path: "/signup",
+    path: '/signup',
     main: SignUpPage,
   },
-};
+}
