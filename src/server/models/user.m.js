@@ -128,4 +128,17 @@ module.exports = {
 
     return rs
   },
+  addToken: async ({ username, hashedPassword, email, token }) => {
+    try {
+      var rs = await db.any(
+        `UPDATE public."Users"
+          SET "token"=$4
+          WHERE "username" like $1 and "password" like $2 and "email" like $3 `,
+        [username, hashedPassword, email, token],
+      )
+      return true
+    } catch (e) {
+      return false
+    }
+  },
 }
