@@ -4,14 +4,8 @@ const hashLength = 64
 const { getClient, db } = require('../.config/postgres')
 const nodemailer = require('nodemailer')
 const jwt = require('jsonwebtoken')
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  auth: {
-    user: process.env.USERNAME,
-    pass: process.env.PASSWORD,
-  },
-})
+require('dotenv').config()
+
 module.exports = {
   mailAuthorize: async (req, res, next) => {
     console.log(req.params.token)
@@ -77,6 +71,14 @@ module.exports = {
           },
           'secret',
         )
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 465,
+          auth: {
+            user: `${process.env.USERNAME_GMAIL}`,
+            pass: `${process.env.PASSWORD_GMAIL}`,
+          },
+        })
 
         var content = ` <div style="padding:0;margin:0;height:100%;width:100%;font-family:Arial,'Times New Roman','Calibri'">
       <div style="margin:0 auto;max-width:600px;display:block;font-family:inherit">
