@@ -166,7 +166,7 @@ module.exports = {
       <tr style="margin:0;padding:0;border:none;border-spacing:0;border-collapse:collapse;font-family:inherit">
       <td style="margin:0;padding:0;border:none;border-spacing:0;text-align:center;border-collapse:collapse;font-family:inherit" align="center">
       <div style="font-family:inherit">
-      <a style="background: #CD0574;min-width: 300px;border-radius: 12.8px;padding: 25.5px 19px 26.5px 19px;text-align: center;font-size: 18px;font-weight: 700;color: #f9f9f9;display: inline-block;text-decoration: none;line-height: 120%;}" href="https://netflizservera.onrender.com/authen/${token}">XÁC MINH EMAIL</a>
+      <a style="background: #CD0574;min-width: 300px;border-radius: 12.8px;padding: 25.5px 19px 26.5px 19px;text-align: center;font-size: 18px;font-weight: 700;color: #f9f9f9;display: inline-block;text-decoration: none;line-height: 120%;}" href="https://netflizserver.onrender.com/authenMail/${token}">XÁC MINH EMAIL</a>
       </div>
       </td>
       </tr>
