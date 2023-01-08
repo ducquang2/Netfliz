@@ -22,8 +22,8 @@ function ProfilePage() {
   })
 
   const logOut = () => {
-    localStorage.removeItem('uid')
-    localStorage.removeItem('per')
+    localStorage.removeItem('token')
+  
     navigate({
       pathname: '/',
     })

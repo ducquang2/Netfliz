@@ -1,16 +1,17 @@
 const { fdb } = require('../.config/firebase')
 
 const queryDB = require('../.config/postgres')
-const CryptoJS = require('crypto-js')
+
 const { getClient, db } = require('../.config/postgres')
 const hashLength = 64
 const userinfoM = require('./userinfo.m')
+const CryptoJS = require('crypto-js')
 module.exports = {
   registerUser: async (username, password, email, permission) => {
     var client = db
 
     var rs = await db.any(
-      `select * from public.\"Users\" where \"username\" like '${username}' or \"email\" like '${username}'`,
+      `select * from public.\"Users\" where \"username\" like '${username}' or \"email\" like '${email}'`,
     )
 
     if (rs.length == 0) {
@@ -31,22 +32,41 @@ module.exports = {
     return false
   },
   loginUser: async (username, password) => {
-    var client = db
+    
+    
 
-    var rs = await db.any(
-      `select * from public.\"Users\" where \"username\" like '${username}' and \"password\" like '${password}'`,
-    )
-    if (rs.length == 0) {
-      rs = await db.any(
-        `select * from public.\"Users\" where \"email\" like '${username}' and \"password\" like '${password}'`,
+    if(username.indexOf('@')===-1)
+    {
+      const salt =username;
+      const pwSalt = password + salt
+
+      const hashedPassword = CryptoJS.SHA256(pwSalt, {
+        outputLength: hashLength * 4,
+      }).toString(CryptoJS.enc.Hex)
+      var rs = await db.one(
+        `select * from public.\"Users\" where \"username\" like '${username}' and \"password\" like '${hashedPassword}'`,
       )
-      if (rs.length == 0) {
-        return null
-      }
-      return rs
+      return rs;
     }
+    else
+    {
+     var rs = await db.one(
+        `select * from public.\"Users\" where \"email\" like '${username}'`,
+      )
+      const salt =rs.username;
+      const pwSalt = password + salt
 
-    return rs[0]
+      const hashedPassword = CryptoJS.SHA256(pwSalt, {
+        outputLength: hashLength * 4,
+      }).toString(CryptoJS.enc.Hex)
+      var rsa = await db.one(
+        `select * from public.\"Users\" where \"email\" like '${username}' and \"password\" like '${hashedPassword}'`,
+      )
+      return rsa;
+    }
+    
+    return null;
+   
   },
   validUID: async (uid) => {
     var client = db
@@ -145,9 +165,10 @@ module.exports = {
     try {
       var rs = await db.one(
         `select * from public.\"Users\" where 
-        "username" like $1 and "password" like $2 "email" like $3 `,
+        "username" like $1 and "password" like $2 and "email" like $3 `,
         [username, hashedPassword, email],
       )
+      if(!rs) return null
       return rs.permission
     } catch (e) {
       return null

@@ -24,14 +24,32 @@ function LogInPage() {
         remember: true,
       })
 
-      .then((res) => {
+      .then(async (res) => {
         if (res.data.message === "success") {
-          localStorage.setItem("uid", res.data.data);
-          localStorage.setItem("per", res.data.permission);
           console.log(res.data.data);
-          if (res.data.permission) {
-            window.location.href = "/admin";
-          } else window.location.href = "/";
+          localStorage.setItem("token", res.data.data);
+          axios
+          .post(`${process.env.REACT_APP_ENDPOINT}users/authen`,{
+            
+              token:res.data.data
+            
+          }).then((resa)=>
+          {
+            console.log(resa.permission)
+            if(resa.data.permission==="not")
+            {
+              localStorage.removeItem('token')
+            }
+            else
+            {
+              if (resa.data.permission) {
+                window.location.href = "/admin";
+              } else window.location.href = "/";
+            }
+          
+          
+          })
+      
         } else {
           toast.warning(res.data.message, { autoClose: 3000 });
         }

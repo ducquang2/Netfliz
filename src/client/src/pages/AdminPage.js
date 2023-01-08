@@ -4,17 +4,34 @@ import { Footer } from "../components/Footer";
 import { Button } from "../components/Button";
 import { Text } from "../components/Text";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 function AdminPage() {
     const navigate = useNavigate();
 
 
-    React.useEffect(()=> {
-        if(localStorage.getItem("per")!=="true")
-        {
-            window.location.href="/"
-        }
-    })
+    // React.useEffect(()=> {
+       
+    //     axios
+    //       .post(`${process.env.REACT_APP_ENDPOINT}users/authen`,{
+           
+    //           token:localStorage.getItem("token")
+         
+    //       }).then((resa)=>
+    //       {
+    //         console.log(resa.permission)
+    //         if(resa.data.permission==="not")
+    //         {
+    //           localStorage.removeItem('token')
+    //         }
+    //         else
+    //         {
+    //           if (resa.data.permission) {
+    //             window.location.href = "/admin";
+    //           } else window.location.href = "/";
+    //         }
+          
+    //       })
+    // },[ window.location.href])
 
     return (
         <div className="App bg-[#082032]">
