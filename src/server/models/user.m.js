@@ -141,4 +141,16 @@ module.exports = {
       return false
     }
   },
+  checkAuthenUser: async ({ username, hashedPassword, email }) => {
+    try {
+      var rs = await db.one(
+        `select * from public.\"Users\" where 
+        "username" like $1 and "password" like $2 "email" like $3 `,
+        [username, hashedPassword, email],
+      )
+      return rs.permission
+    } catch (e) {
+      return null
+    }
+  },
 }
