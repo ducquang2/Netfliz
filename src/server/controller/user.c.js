@@ -271,13 +271,15 @@ module.exports = {
           data: rs,
           message: 'Invalid username or password',
         })
+      } else {
+        if (!rs.token) {
+          return res.status(200).send({
+            data: rs,
+            message: 'Please authorize your email',
+          })
+        }
       }
-      if (!rs.token.lenth == 0) {
-        return res.status(200).send({
-          data: rs,
-          message: 'Please authorize your email',
-        })
-      }
+
       const user = rs
       // if (req.body.remember=="true") {
       //     var hour = 3600000;
