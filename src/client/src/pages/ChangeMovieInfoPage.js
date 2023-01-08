@@ -222,7 +222,7 @@ function ChangeMovieInfoPage() {
               inputTheme="p-4 h-10 max-w-xl w-full bg-black bg-opacity-25 border-2 rounded-xl text-white"
               id="video_link"
               containerTheme="w-full justify-center"
-              valuetext={isChosen.vid}
+              value={isChosen.vid}
               required
               readonly={true}
             />
@@ -238,7 +238,7 @@ function ChangeMovieInfoPage() {
               inputTheme="p-4 h-10 max-w-xl w-full bg-black bg-opacity-25 border-2 rounded-xl text-white"
               id="movie_name"
               containerTheme="w-full justify-center"
-              valuetext={isChosen.name}
+              value={isChosen.name}
               required
               onChange={(e) => {
                 setIsChosen({ ...isChosen, name: e.target.value });
@@ -256,7 +256,7 @@ function ChangeMovieInfoPage() {
               inputTheme="p-4 h-10 max-w-xl w-full bg-black bg-opacity-25 border-2 rounded-xl text-white"
               id="movie_content"
               containerTheme="w-full justify-center"
-              valuetext={isChosen.review}
+              value={isChosen.review}
               required
               onChange={(e) =>
                 setIsChosen({ ...isChosen, review: e.target.value })
@@ -277,7 +277,7 @@ function ChangeMovieInfoPage() {
               min="0"
               max="5"
               containerTheme="w-full justify-center"
-              valuetext={isChosen.ratting}
+              value={isChosen.ratting}
               required
               onChange={(e) =>
                 setIsChosen({ ...isChosen, ratting: e.target.value })
@@ -335,7 +335,7 @@ function ChangeMovieInfoPage() {
               inputTheme="p-4 h-10 max-w-xl w-full bg-black bg-opacity-25 border-2 rounded-xl text-white"
               id="director"
               containerTheme="w-full justify-center"
-              valuetext={isChosen.link}
+              value={isChosen.link}
               required
               onChange={(e) =>
                 setIsChosen({ ...isChosen, link: e.target.value })
@@ -452,7 +452,7 @@ function ChangeMovieInfoPage() {
                   inputTheme="p-4 h-10 max-w-xl w-full bg-black bg-opacity-25 border-2 rounded-xl text-white"
                   id="Episode_name"
                   containerTheme="w-full justify-center"
-                  valuetext={collectionName}
+                  value={collectionName}
                   onChange={(e) => setCollectionName(e.target.value)}
                 />
                 <Button
@@ -469,22 +469,16 @@ function ChangeMovieInfoPage() {
           )}
           <div className="flex py-20 justify-evenly">
             <Button
-              theme="bg-pink-600 rounded-[5px] w-28 h-10"
+              theme="bg-pink-600 rounded-[5px] w-28 h-10 text-white font-button text-[25px]"
               onClick={saveSubmit}
             >
-              <Text
-                text="SAVE"
-                customTheme="text-white font-button text-[25px]"
-              />
+              SAVE
             </Button>
             <Button
-              theme="bg-pink-600 rounded-[5px] w-28 h-10"
+              theme="bg-pink-600 rounded-[5px] w-28 h-10 text-white font-button text-[25px]"
               onClick={(e) => setIsChosen(null)}
             >
-              <Text
-                text="BACK"
-                customTheme="text-white font-button text-[25px]"
-              />
+              BACK
             </Button>
           </div>
         </div>
