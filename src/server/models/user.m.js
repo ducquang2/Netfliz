@@ -1,7 +1,7 @@
 const { fdb } = require('../.config/firebase')
 
 const queryDB = require('../.config/postgres')
-
+const jwt = require('jsonwebtoken')
 const { getClient, db } = require('../.config/postgres')
 const hashLength = 64
 const userinfoM = require('./userinfo.m')
@@ -31,13 +31,22 @@ module.exports = {
     }
     return false
   },
+  addToken: async ({ username, hashedPassword, email, token }) => {
+    try {
+      var rs = await db.any(
+        `UPDATE public."Users"
+          SET "token"=$4
+          WHERE "username" like $1 and "password" like $2 and "email" like $3 `,
+        [username, hashedPassword, email, token],
+      )
+      return true
+    } catch (e) {
+      return false
+    }
+  },
   loginUser: async (username, password) => {
-    
-    
-
-    if(username.indexOf('@')===-1)
-    {
-      const salt =username;
+    if (username.indexOf('@') === -1) {
+      const salt = username
       const pwSalt = password + salt
 
       const hashedPassword = CryptoJS.SHA256(pwSalt, {
@@ -46,14 +55,12 @@ module.exports = {
       var rs = await db.one(
         `select * from public.\"Users\" where \"username\" like '${username}' and \"password\" like '${hashedPassword}'`,
       )
-      return rs;
-    }
-    else
-    {
-     var rs = await db.one(
+      return rs
+    } else {
+      var rs = await db.one(
         `select * from public.\"Users\" where \"email\" like '${username}'`,
       )
-      const salt =rs.username;
+      const salt = rs.username
       const pwSalt = password + salt
 
       const hashedPassword = CryptoJS.SHA256(pwSalt, {
@@ -62,11 +69,10 @@ module.exports = {
       var rsa = await db.one(
         `select * from public.\"Users\" where \"email\" like '${username}' and \"password\" like '${hashedPassword}'`,
       )
-      return rsa;
+      return rsa
     }
-    
-    return null;
-   
+
+    return null
   },
   validUID: async (uid) => {
     var client = db
@@ -104,13 +110,22 @@ module.exports = {
       const hashedPasswordVer2 = CryptoJS.SHA256(newpassword + salt, {
         outputLength: hashLength * 4,
       }).toString(CryptoJS.enc.Hex)
+      const token = jwt.sign(
+        {
+          username: rs.username,
+          hashedPassword: hashedPasswordVer2,
+          email: rs.email,
+        },
+        'secret',
+      )
       var rs = await db.any(
         `UPDATE public."Users"
-            SET "password"=$3
+            SET "password"=$3 , "token"=$4
             WHERE "uid" like $1 and "password" like $2 `,
-        [uid, hashedPassword, hashedPasswordVer2],
+        [uid, hashedPassword, hashedPasswordVer2, token],
       )
     } catch (e) {
+      console.log(e)
       return false
     }
 
@@ -148,28 +163,18 @@ module.exports = {
 
     return rs
   },
-  addToken: async ({ username, hashedPassword, email, token }) => {
-    try {
-      var rs = await db.any(
-        `UPDATE public."Users"
-          SET "token"=$4
-          WHERE "username" like $1 and "password" like $2 and "email" like $3 `,
-        [username, hashedPassword, email, token],
-      )
-      return true
-    } catch (e) {
-      return false
-    }
-  },
+
   checkAuthenUser: async ({ username, hashedPassword, email }) => {
     try {
-      var rs = await db.one(
+      console.log({ username, hashedPassword, email })
+      var rs = await db.any(
         `select * from public.\"Users\" where 
         "username" like $1 and "password" like $2 and "email" like $3 `,
         [username, hashedPassword, email],
       )
-      if(!rs) return null
-      return rs.permission
+      console.log(rs)
+      if (rs.length == 0) return null
+      return rs[0]
     } catch (e) {
       return null
     }

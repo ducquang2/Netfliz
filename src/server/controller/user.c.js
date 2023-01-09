@@ -257,9 +257,8 @@ module.exports = {
     try {
       console.log(req.body)
       const { username, password } = req.body
-   
 
-      const rs = await userM.loginUser(username,password)
+      const rs = await userM.loginUser(username, password)
 
       if (!rs) {
         return res.status(200).send({
@@ -275,7 +274,6 @@ module.exports = {
         }
       }
 
-  
       // if (req.body.remember=="true") {
       //     var hour = 3600000;
       //     req.session.cookie.maxAge = 14 * 24 * hour; //2 weeks
@@ -294,7 +292,7 @@ module.exports = {
 
       return res.status(200).send({
         data: rs.token,
-      
+
         message: 'success',
       })
 
@@ -308,38 +306,29 @@ module.exports = {
   userAuthentication: async (req, res, next) => {
     //console.log(req.session);
     try {
-      
       const { token } = req.body
       console.log(token)
       if (token != null) {
-        jwt.verify(token,"secret", async (err, decoded) =>{
-          if(err)
-          {
+        jwt.verify(token, 'secret', async (err, decoded) => {
+          if (err) {
             throw err
-          }
-          else
-          {
-            console.log(decoded)
-            const {username,hashedPassword,email} = decoded
-            const rs = await userM.checkAuthenUser({username,hashedPassword,email})
-            if(rs===null)
-            {
-              
-               
-              return  res.status(200).send({
-                permission: "not",
+          } else {
+            const rs = await userM.checkAuthenUser(decoded)
+            if (rs === null) {
+              return res.status(200).send({
+                permission: 'not',
+                uid: '',
               })
             }
-              
-            
+
             console.log(rs)
-    
-          return  res.status(200).send({
-              permission: rs,
+
+            return res.status(200).send({
+              permission: rs.permission,
+              uid: rs.uid,
             })
           }
         })
-    
       } else {
         res.redirect('/')
       }
@@ -353,6 +342,7 @@ module.exports = {
       const { uid, password, newpassword } = req.body
 
       const rs = await userM.changePassword({ uid, password, newpassword })
+
       console.log(rs)
 
       res.status(200).send({
@@ -411,6 +401,43 @@ module.exports = {
     } catch (err) {
       console.log(err)
       next(err)
+    }
+  },
+  checkAuthenThrough: async (req, res, next) => {
+    //console.log(req.session);
+    try {
+      const { token } = req.body
+      console.log(token)
+      if (token != null) {
+        jwt.verify(token, 'secret', async (err, decoded) => {
+          if (err) {
+            throw err
+          } else {
+            console.log(decoded)
+            const { username, hashedPassword, email } = decoded
+            const rs = await userM.checkAuthenUser({
+              username,
+              hashedPassword,
+              email,
+            })
+            if (rs === null) {
+              return res.status(500).send({
+                message: 'Bad request',
+              })
+            } else {
+              next(rs)
+            }
+          }
+        })
+      } else {
+        return res.status(500).send({
+          message: 'Bad request',
+        })
+      }
+    } catch (e) {
+      return res.status(500).send({
+        message: 'Bad request',
+      })
     }
   },
 }

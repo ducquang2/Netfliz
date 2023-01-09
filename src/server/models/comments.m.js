@@ -13,7 +13,6 @@ module.exports = {
       .slice(0, 10)
     const cmts = db.collection('comments').doc(vid)
     const account = await userinfoM.getUserinfo({ uid: uid })
-    console.log(account)
 
     //    console.log({vid,cid,username,content})
     if (cid == null) {

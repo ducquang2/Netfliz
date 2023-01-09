@@ -12,7 +12,7 @@ function ProfilePage() {
   const [infoChange, setInfoChange] = React.useState({})
   const [isChanging, setIsChanging] = React.useState(false)
 
-  const uid = localStorage.getItem('uid')
+  const [uid, setUid] = React.useState('')
   const [isChangingPassword, setIsChangingPassword] = React.useState(false)
   const [password, setPassword] = React.useState({
     uid,
@@ -20,10 +20,30 @@ function ProfilePage() {
     newPass: '',
     newrePass: '',
   })
-
+  React.useEffect(() => {
+    if (
+      localStorage.getItem('token') !== null &&
+      localStorage.getItem('token') !== 'null'
+    ) {
+      axios
+        .post(`${process.env.REACT_APP_ENDPOINT}users/authen`, {
+          token: localStorage.getItem('token'),
+        })
+        .then((resa) => {
+          if (resa.data.permission === 'not') {
+            localStorage.removeItem('token')
+            window.location.href = '/'
+          } else {
+            setUid(resa.data.uid)
+          }
+        })
+    } else {
+      window.location.href = '/'
+    }
+  }, [localStorage])
   const logOut = () => {
     localStorage.removeItem('token')
-  
+
     navigate({
       pathname: '/',
     })
@@ -78,7 +98,7 @@ function ProfilePage() {
         setInfo(res.data.data)
         setInfoChange(res.data.data)
       })
-  }, [])
+  }, [uid])
   const rmMovie = async (vid) => {
     axios
 

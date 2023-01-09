@@ -22,9 +22,12 @@ module.exports = {
 
         return { ...each, data: real }
       })
+
       var cmt = await Promise.all(time)
+
       cmt.sort((a, b) => b.data[0].timeStamp - a.data[0].timeStamp)
       cmt.forEach((Element) => console.log(Element.data[0].timeStamp))
+
       res.status(200).send({
         data: cmt,
         messages: 'post succeed',
@@ -51,7 +54,9 @@ module.exports = {
         return { ...each, data: real }
       })
       var cmt = await Promise.all(time)
+      console.log(time)
       cmt.sort((a, b) => b.data[0].timeStamp - a.data[0].timeStamp)
+
       cmt.forEach((Element) => console.log(Element.data[0].timeStamp))
 
       res.status(200).send({
@@ -59,6 +64,7 @@ module.exports = {
         messages: 'post succeed',
       })
     } catch (err) {
+      console.log(err)
       next(err)
     }
   },

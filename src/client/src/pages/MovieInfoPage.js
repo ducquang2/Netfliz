@@ -28,6 +28,7 @@ function MovieInfoPage() {
   const [added, setAdded] = React.useState(false)
   const search = useLocation().search
   const navigate = useNavigate()
+  const [uid, setUid] = React.useState('')
   const watchingAccessing = () => {
     navigate(`/watch?vid=${new URLSearchParams(search).get('vid')}`)
   }
@@ -55,7 +56,7 @@ function MovieInfoPage() {
   React.useEffect(() => {
     axios
       .post(`${process.env.REACT_APP_ENDPOINT}userinfo/get`, {
-        uid: localStorage.getItem('uid'),
+        uid: uid,
       })
       .then((res) => {
         setInfo(res.data.data)
@@ -70,7 +71,7 @@ function MovieInfoPage() {
         .post(`${process.env.REACT_APP_ENDPOINT}comments/post`, {
           vid: vid,
 
-          uid: localStorage.getItem('uid'),
+          uid,
           content: inputCmt,
         })
         .then((res) => {
@@ -79,12 +80,30 @@ function MovieInfoPage() {
         })
     }
   }
-
+  React.useEffect(() => {
+    if (
+      localStorage.getItem('token') !== null &&
+      localStorage.getItem('token') !== 'null'
+    ) {
+      axios
+        .post(`${process.env.REACT_APP_ENDPOINT}users/authen`, {
+          token: localStorage.getItem('token'),
+        })
+        .then((resa) => {
+          if (resa.data.permission === 'not') {
+            localStorage.removeItem('token')
+            window.location.href = '/'
+          } else {
+            setUid(resa.data.uid)
+          }
+        })
+    }
+  }, [localStorage])
   const postAddList = async () => {
     axios
       .post(`${process.env.REACT_APP_ENDPOINT}userinfo/addMovie`, {
         vid: vid,
-        uid: localStorage.getItem('uid'),
+        uid: uid,
         img: movie.image,
       })
       .then((res) => {
@@ -106,7 +125,7 @@ function MovieInfoPage() {
   const rmMovie = async () => {
     axios
       .post(`${process.env.REACT_APP_ENDPOINT}userinfo/rmMovie`, {
-        uid: localStorage.getItem('uid'),
+        uid: uid,
         vid: vid,
       })
       .then((res) => {
@@ -147,8 +166,8 @@ function MovieInfoPage() {
               fontSize: 'calc(1rem + 2.5vw)',
             }}
           />
-          {localStorage.getItem('uid') !== null &&
-            localStorage.getItem('uid') !== 'null' && (
+          {localStorage.getItem('token') !== null &&
+            localStorage.getItem('token') !== 'null' && (
               <div className="sm:mb-10 mb-4 flex flex-row">
                 <Button
                   theme={
@@ -215,8 +234,8 @@ function MovieInfoPage() {
           customTheme="text-[2rem] px-5 text-white"
           isHeader={true}
         />
-        {localStorage.getItem('uid') !== null &&
-          localStorage.getItem('uid') !== 'null' && (
+        {localStorage.getItem('token') !== null &&
+          localStorage.getItem('token') !== 'null' && (
             <form
               className="flex flex-row max-sm:flex-col max-sm:items-center max-sm:space-y-3 px-5 my-5"
               onSubmit={postComment}
