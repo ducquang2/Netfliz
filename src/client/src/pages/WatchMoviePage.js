@@ -22,6 +22,7 @@ function WatchMoviePage() {
   const search = useLocation().search
   const [cmt, setCmt] = React.useState([])
   const [inputCmt, setInputCmt] = React.useState('')
+  const [uid, setUid] = useState('')
   const vid = new URLSearchParams(search).get('vid')
   const fetchNewMoviesData = async () => {
     axios.post(`${process.env.REACT_APP_ENDPOINT}videos/new`).then((res) => {
@@ -29,14 +30,33 @@ function WatchMoviePage() {
       setNewMovies(res.data.data)
     })
   }
-
+  React.useEffect(() => {
+    if (
+      localStorage.getItem('token') !== null &&
+      localStorage.getItem('token') !== 'null'
+    ) {
+      axios
+        .post(`${process.env.REACT_APP_ENDPOINT}users/authen`, {
+          token: localStorage.getItem('token'),
+        })
+        .then((resa) => {
+          if (resa.data.permission === 'not') {
+            localStorage.removeItem('token')
+            window.location.href = '/'
+          } else {
+            setUid(resa.data.uid)
+          }
+        })
+    } else {
+      window.location.href = '/'
+    }
+  }, [localStorage])
   const postComment = async () => {
     if (inputCmt !== '') {
       axios
         .post(`${process.env.REACT_APP_ENDPOINT}comments/post`, {
           vid: vid,
-
-          uid: localStorage.getItem('uid'),
+          uid,
           content: inputCmt,
         })
         .then((res) => {
@@ -105,8 +125,8 @@ function WatchMoviePage() {
           customTheme="text-[2rem] px-5 text-white"
           isHeader={true}
         />
-        {localStorage.getItem('uid') !== null &&
-          localStorage.getItem('uid') !== 'null' && (
+        {localStorage.getItem('token') !== null &&
+          localStorage.getItem('token') !== 'null' && (
             <div className="flex flex-row max-sm:flex-col max-sm:items-center max-sm:space-y-3 px-5 my-5">
               <Input
                 containerTheme="w-full min-w-[0px] h-10"

@@ -1,22 +1,22 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import { Button, Input, Text, Form, NavBar, Footer } from "../components";
+import { Button, Input, Text, Form, NavBar, Footer } from '../components'
 
-import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import axios from 'axios'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function LogInPage() {
-  const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate()
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
   const submitClickHandler = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    console.log(`${username} - ${password}`);
-    console.log("clicked");
+    console.log(`${username} - ${password}`)
+    console.log('clicked')
     axios
       .post(`${process.env.REACT_APP_ENDPOINT}users/login`, {
         username,
@@ -24,26 +24,36 @@ function LogInPage() {
         remember: true,
       })
 
-      .then((res) => {
-        if (res.data.message === "success") {
-          localStorage.setItem("uid", res.data.data);
-          localStorage.setItem("per", res.data.permission);
-          console.log(res.data.data);
-          if (res.data.permission) {
-            window.location.href = "/admin";
-          } else window.location.href = "/";
+      .then(async (res) => {
+        if (res.data.message === 'success') {
+          console.log(res.data.data)
+          localStorage.setItem('token', res.data.data)
+          axios
+            .post(`${process.env.REACT_APP_ENDPOINT}users/authen`, {
+              token: res.data.data,
+            })
+            .then((resa) => {
+              console.log(resa)
+              if (resa.data.permission === 'not') {
+                localStorage.removeItem('token')
+              } else {
+                if (resa.data.permission) {
+                  window.location.href = '/admin'
+                } else window.location.href = '/'
+              }
+            })
         } else {
-          toast.warning(res.data.message, { autoClose: 3000 });
+          toast.warning(res.data.message, { autoClose: 3000 })
         }
-      });
-  };
+      })
+  }
 
   const usernameChangeHandler = (event) => {
-    setUsername(event.target.value);
-  };
+    setUsername(event.target.value)
+  }
   const passwordChangeHandler = (event) => {
-    setPassword(event.target.value);
-  };
+    setPassword(event.target.value)
+  }
   return (
     <div className="bg-scroll bg-login-background">
       <NavBar allowSearch={false} />
@@ -79,7 +89,7 @@ function LogInPage() {
               isHeader={false}
               text="Forgot password"
               style={{
-                fontSize: "calc(0.5rem + 1vw)",
+                fontSize: 'calc(0.5rem + 1vw)',
               }}
             />
             <Text
@@ -87,9 +97,9 @@ function LogInPage() {
               isHeader={false}
               text="Don't have account ?"
               style={{
-                fontSize: "calc(0.5rem + 1vw)",
+                fontSize: 'calc(0.5rem + 1vw)',
               }}
-              onClick={() => navigate({ pathname: "/signup" })}
+              onClick={() => navigate({ pathname: '/signup' })}
             />
           </div>
           <Button
@@ -107,12 +117,12 @@ function LogInPage() {
       <ToastContainer />
       <Footer />
     </div>
-  );
+  )
 }
 
 export default {
   routeProps: {
-    path: "/login",
+    path: '/login',
     main: LogInPage,
   },
-};
+}

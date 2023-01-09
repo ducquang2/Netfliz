@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Button, Input } from "./";
 import NetflizLogo from "../assets/images/pink2-logo.png";
-
+import axios from "axios"
 const NavBar = ({ allowSearch = true }) => {
   const [isLogin, setIsLogin] = React.useState(false);
   const navigate = useNavigate();
@@ -38,10 +38,33 @@ const NavBar = ({ allowSearch = true }) => {
   };
 
   React.useEffect(() => {
-    setIsLogin(
-      localStorage.getItem("uid") !== null &&
-        localStorage.getItem("uid") !== "null"
-    );
+    
+    if(localStorage.getItem("token")!==null&&localStorage.getItem("token")!=="null")
+    {
+      axios
+      .post(`${process.env.REACT_APP_ENDPOINT}users/authen`,{
+          token:localStorage.getItem("token")
+      }).then((resa)=>
+      {
+        console.log(resa.permission)
+        if(resa.data.permission==="not")
+        {
+          localStorage.removeItem('token')
+          setIsLogin(false)
+           
+          
+        }
+        else
+        {
+          setIsLogin(true)
+           
+   
+        }
+      
+      
+      })
+    }
+  
   }, [localStorage]);
 
   return (
