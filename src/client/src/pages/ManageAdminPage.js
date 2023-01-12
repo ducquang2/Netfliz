@@ -1,21 +1,21 @@
-import React from "react";
-import { Button, Input, Text, NavBar, Footer } from "../components";
-import axios from "axios";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import React from 'react'
+import { Button, Input, Text, NavBar, Footer } from '../components'
+import axios from 'axios'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { useNavigate } from 'react-router-dom'
 
 function ManageAdminPage() {
-  const navigate = useNavigate();
-  const [textInput, setTextInput] = React.useState("");
-  const [users, setUsers] = React.useState([]);
-  const [changePermission, setChangePermission] = React.useState([]);
+  const navigate = useNavigate()
+  const [textInput, setTextInput] = React.useState('')
+  const [users, setUsers] = React.useState([])
+  const [changePermission, setChangePermission] = React.useState([])
   const [typeUser, setTypeUser] = React.useState({
-    username: "",
-    password: "",
-  });
+    username: '',
+    password: '',
+  })
 
   // TODO: change to accounts search
   const submit = async (e) => {
@@ -25,46 +25,46 @@ function ManageAdminPage() {
           name: textInput,
         })
         .then((res) => {
-          console.log(res.data.data);
-          setUsers(res.data.data);
-        });
+          console.log(res.data.data)
+          setUsers(res.data.data)
+        })
     } else {
       axios
         .post(`${process.env.REACT_APP_ENDPOINT}videos/getall`)
         .then((res) => {
-          console.log(res.data.data);
-          setUsers(res.data.data);
-        });
+          console.log(res.data.data)
+          setUsers(res.data.data)
+        })
     }
-    setTextInput("");
-  };
+    setTextInput('')
+  }
   React.useEffect(() => {
     axios
       .post(`${process.env.REACT_APP_ENDPOINT}users/getUser`, {
-        uid: localStorage.getItem("uid"),
+        token: localStorage.getItem('token'),
       })
       .then((res) => {
-        console.log(res.data.data);
-        setUsers(res.data.data);
-      });
-  }, []);
+        console.log(res.data.data)
+        setUsers(res.data.data)
+      })
+  }, [])
 
   const handleChange = (uid, per) => {
-    let index = changePermission.findIndex((element) => element.uid === uid);
+    let index = changePermission.findIndex((element) => element.uid === uid)
     if (index === -1) {
-      setChangePermission([...changePermission, { uid, permission: !per }]);
+      setChangePermission([...changePermission, { uid, permission: !per }])
     } else {
-      var array = changePermission;
-      array.splice(index, 1);
-      setChangePermission([...array]);
+      var array = changePermission
+      array.splice(index, 1)
+      setChangePermission([...array])
     }
-  };
+  }
   const saveSubmit = async (e) => {
     if (typeUser.password.length === 0 || typeUser.username.length === 0) {
-      toast.error("Please input username or password", {
+      toast.error('Please input username or password', {
         autoClose: 2000,
-        position: "bottom-left",
-      });
+        position: 'bottom-left',
+      })
     } else {
       axios
         .post(`${process.env.REACT_APP_ENDPOINT}users/changePermission`, {
@@ -73,23 +73,23 @@ function ManageAdminPage() {
           password: typeUser.password,
         })
         .then((res) => {
-          setTypeUser({ username: "", password: "" });
-          if (res.data.message === "success") {
-            setUsers(res.data.data);
-            toast.success("Change permission successfully", {
+          setTypeUser({ username: '', password: '' })
+          if (res.data.message === 'success') {
+            setUsers(res.data.data)
+            toast.success('Change permission successfully', {
               autoClose: 2000,
-              position: "bottom-left",
-            });
-            setChangePermission([]);
+              position: 'bottom-left',
+            })
+            setChangePermission([])
           } else {
-            toast.error("There was an error, please try again", {
+            toast.error('There was an error, please try again', {
               autoClose: 2000,
-              position: "bottom-left",
-            });
+              position: 'bottom-left',
+            })
           }
-        });
+        })
     }
-  };
+  }
   return (
     <div className="App h-screen bg-[#082032]">
       <NavBar />
@@ -130,7 +130,7 @@ function ManageAdminPage() {
               <th
                 style={{
                   width: 200,
-                  flex: "200 0 auto",
+                  flex: '200 0 auto',
                 }}
               >
                 ID
@@ -138,7 +138,7 @@ function ManageAdminPage() {
               <th
                 style={{
                   width: 300,
-                  flex: "300 0 auto",
+                  flex: '300 0 auto',
                 }}
               >
                 USERNAME
@@ -146,7 +146,7 @@ function ManageAdminPage() {
               <th
                 style={{
                   width: 400,
-                  flex: "400 0 auto",
+                  flex: '400 0 auto',
                 }}
               >
                 EMAIL
@@ -154,7 +154,7 @@ function ManageAdminPage() {
               <th
                 style={{
                   width: 100,
-                  flex: "100 0 auto",
+                  flex: '100 0 auto',
                 }}
               >
                 ISADMIN
@@ -167,7 +167,7 @@ function ManageAdminPage() {
                 <td
                   style={{
                     width: 200,
-                    flex: "200 0 auto",
+                    flex: '200 0 auto',
                   }}
                 >
                   {each.uid}
@@ -175,7 +175,7 @@ function ManageAdminPage() {
                 <td
                   style={{
                     width: 300,
-                    flex: "300 0 auto",
+                    flex: '300 0 auto',
                   }}
                 >
                   {each.username}
@@ -184,7 +184,7 @@ function ManageAdminPage() {
                   className="truncate"
                   style={{
                     width: 400,
-                    flex: "400 0 auto",
+                    flex: '400 0 auto',
                   }}
                 >
                   {each.email}
@@ -193,20 +193,20 @@ function ManageAdminPage() {
                   className="text-center"
                   style={{
                     width: 100,
-                    flex: "100 0 auto",
+                    flex: '100 0 auto',
                   }}
                 >
                   <input
                     type="checkbox"
                     checked={
                       changePermission.findIndex(
-                        (item) => item.uid === each.uid
+                        (item) => item.uid === each.uid,
                       ) === -1
                         ? each.permission
                         : !each.permission
                     }
                     onChange={(e) => {
-                      handleChange(each.uid, each.permission);
+                      handleChange(each.uid, each.permission)
                     }}
                   ></input>
                 </td>
@@ -225,10 +225,10 @@ function ManageAdminPage() {
             textColor="white"
             name="username"
             required
-            labelText={"username"}
+            labelText={'username'}
             text={typeUser.username}
             onChange={(e) => {
-              setTypeUser({ ...typeUser, username: e.target.value });
+              setTypeUser({ ...typeUser, username: e.target.value })
             }}
           />
 
@@ -239,11 +239,11 @@ function ManageAdminPage() {
             textColor="white"
             name="username"
             type="password"
-            labelText={"password"}
+            labelText={'password'}
             required
             text={typeUser.password}
             onChange={(e) => {
-              setTypeUser({ ...typeUser, password: e.target.value });
+              setTypeUser({ ...typeUser, password: e.target.value })
             }}
           />
           <div className="flex py-12 justify-evenly">
@@ -258,7 +258,7 @@ function ManageAdminPage() {
             </Button>
             <Button
               theme="bg-pink-600 rounded-[5px] w-28 h-10"
-              onClick={(e) => navigate("/admin")}
+              onClick={(e) => navigate('/admin')}
             >
               <Text
                 text="BACK"
@@ -272,11 +272,11 @@ function ManageAdminPage() {
       <Footer />
       <ToastContainer />
     </div>
-  );
+  )
 }
 export default {
   routeProps: {
-    path: "/addadmin",
+    path: '/addadmin',
     main: ManageAdminPage,
   },
-};
+}

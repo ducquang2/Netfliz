@@ -60,7 +60,7 @@ module.exports = {
       if (rs == false) {
         res.status(200).send({
           data: rs,
-          message: 'valid username',
+          message: 'Exist Username or Email',
         })
       } else {
         const token = jwt.sign(
@@ -355,15 +355,38 @@ module.exports = {
   },
   getUser: async (req, res, next) => {
     try {
-      const { uid } = req.body
+      const { token } = req.body
+      if (token != null) {
+        jwt.verify(token, 'secret', async (err, decoded) => {
+          if (err) {
+            throw err
+          } else {
+            const { username, hashedPassword, email } = decoded
+            const rs = await userM.checkAuthenUser({
+              username,
+              hashedPassword,
+              email,
+            })
+            if (rs === null) {
+              return res.status(500).send({
+                message: 'Bad request',
+              })
+            } else {
+              const ra = await userM.getUser({ uid: rs.uid })
+              console.log(ra)
 
-      const rs = await userM.getUser({ uid })
-      console.log(rs)
-
-      res.status(200).send({
-        data: rs,
-        message: 'success',
-      })
+              return res.status(200).send({
+                data: ra,
+                message: 'success',
+              })
+            }
+          }
+        })
+      } else {
+        return res.status(500).send({
+          message: 'Bad request',
+        })
+      }
     } catch (err) {
       console.log(err)
       next(err)

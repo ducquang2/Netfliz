@@ -1,78 +1,78 @@
-import React from "react";
+import React from 'react'
 
-import { Button, Input, Text, NavBar, Footer, Card } from "../components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Button, Input, Text, NavBar, Footer, Card } from '../components'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function ChangeMovieInfoPage() {
-  const navigate = useNavigate();
-  const [textInput, setTextInput] = React.useState("");
-  const [movies, setMovies] = React.useState([]);
-  const [isChosen, setIsChosen] = React.useState(null);
-  const [tagsChange, setTagsChange] = React.useState([null, null, null]);
-  const [allEpisode, setAllEpisode] = React.useState([]);
-  const [episodeChosen, setEpisodeChosen] = React.useState(null);
-  const [createEp, setCreateEp] = React.useState(false);
-  const [collectionName, setCollectionName] = React.useState("");
-  const [upload, setUpload] = React.useState(false);
-  const [file, setFile] = React.useState({});
-
+  const navigate = useNavigate()
+  const [textInput, setTextInput] = React.useState('')
+  const [movies, setMovies] = React.useState([])
+  const [isChosen, setIsChosen] = React.useState(null)
+  const [tagsChange, setTagsChange] = React.useState([null, null, null])
+  const [allEpisode, setAllEpisode] = React.useState([])
+  const [episodeChosen, setEpisodeChosen] = React.useState(null)
+  const [createEp, setCreateEp] = React.useState(false)
+  const [collectionName, setCollectionName] = React.useState('')
+  const [upload, setUpload] = React.useState(false)
+  const [file, setFile] = React.useState({})
+  const [allow, setAllow] = React.useState(null)
   const categoryType = [
-    { value: "null", text: "null" },
-    { value: "action", text: "Action" },
-    { value: "anime", text: "Anime" },
-    { value: "comedy", text: "Comedy" },
-    { value: "dramas", text: "Dramas" },
-    { value: "romance", text: "Romance" },
-  ];
+    { value: 'null', text: 'null' },
+    { value: 'action', text: 'Action' },
+    { value: 'anime', text: 'Anime' },
+    { value: 'comedy', text: 'Comedy' },
+    { value: 'dramas', text: 'Dramas' },
+    { value: 'romance', text: 'Romance' },
+  ]
 
   const getAllEpisode = async () => {
     axios
       .post(`${process.env.REACT_APP_ENDPOINT}videos/getAllEp`)
       .then((res) => {
-        console.log(res.data.data);
-        setAllEpisode(res.data.data);
-      });
-  };
+        console.log(res.data.data)
+        setAllEpisode(res.data.data)
+      })
+  }
   const createCollection = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    if (collectionName.length === 0) return;
+    if (collectionName.length === 0) return
     axios
       .post(`${process.env.REACT_APP_ENDPOINT}videos/createEp`, {
         name: collectionName,
       })
       .then((res) => {
-        console.log(res.data.data);
-        if (res.data.message === "success") {
-          toast.success("Created successfully", {
+        console.log(res.data.data)
+        if (res.data.message === 'success') {
+          toast.success('Created successfully', {
             autoClose: 2000,
-            position: "bottom-left",
-          });
-          getAllEpisode();
-          setCreateEp(false);
+            position: 'bottom-left',
+          })
+          getAllEpisode()
+          setCreateEp(false)
         } else {
-          toast.error("Please try again", {
+          toast.error('Please try again', {
             autoClose: 2000,
-            position: "bottom-left",
-          });
+            position: 'bottom-left',
+          })
         }
-      });
-  };
+      })
+  }
   const saveSubmit = async (e) => {
-    let typeString = "";
+    let typeString = ''
     tagsChange.forEach((each) => {
-      if (each !== "null") {
+      if (each !== 'null') {
         if (typeString.length > 0) {
-          typeString += ",";
+          typeString += ','
         }
-        typeString += each;
+        typeString += each
       }
-    });
+    })
 
     var d2 = new Date(
       new Date().getUTCFullYear(),
@@ -80,8 +80,8 @@ function ChangeMovieInfoPage() {
       new Date().getUTCDate(),
       new Date().getUTCHours(),
       new Date().getUTCMinutes(),
-      new Date().getUTCSeconds()
-    );
+      new Date().getUTCSeconds(),
+    )
     axios
       .post(`${process.env.REACT_APP_ENDPOINT}videos/changeVideo`, {
         vid: isChosen.vid,
@@ -92,25 +92,25 @@ function ChangeMovieInfoPage() {
         haveEp: episodeChosen,
         review: isChosen.review,
         type: typeString,
-        uid: localStorage.getItem("uid"),
+        uid: localStorage.getItem('uid'),
         time: d2.toUTCString(),
       })
       .then((res) => {
-        if (res.data.message === "success") {
-          toast.success("Uploaded successfully", {
+        if (res.data.message === 'success') {
+          toast.success('Uploaded successfully', {
             autoClose: 2000,
-            position: "bottom-left",
-          });
-          setIsChosen(res.data.data);
+            position: 'bottom-left',
+          })
+          setIsChosen(res.data.data)
         } else {
-          toast.error("Try again", {
+          toast.error('Try again', {
             autoClose: 2000,
-            position: "bottom-left",
-          });
+            position: 'bottom-left',
+          })
         }
-      });
+      })
     //vid,link,name,image,ratting,haveEp,review,type
-  };
+  }
   const submit = async (e) => {
     if (textInput.length > 0) {
       axios
@@ -118,83 +118,97 @@ function ChangeMovieInfoPage() {
           name: textInput,
         })
         .then((res) => {
-          console.log(res.data.data);
-          setMovies(res.data.data);
-        });
+          console.log(res.data.data)
+          setMovies(res.data.data)
+        })
     } else {
       axios
         .post(`${process.env.REACT_APP_ENDPOINT}videos/getall`)
         .then((res) => {
-          console.log(res.data.data);
-          setMovies(res.data.data);
-        });
+          console.log(res.data.data)
+          setMovies(res.data.data)
+        })
     }
-    setTextInput("");
-  };
+    setTextInput('')
+  }
   React.useEffect(() => {
-    if (localStorage.getItem("per") !== "true") {
-      window.location.href = "/";
-    } else {
-      try {
-        let value = decodeURI(window.location.search).split("?")[1].split("=");
-        axios
-          .post(`${process.env.REACT_APP_ENDPOINT}videos/search`, {
-            name: value[1].replace("+", " "),
-          })
-          .then((res) => {
-            console.log(res.data.data);
-            setMovies(res.data.data);
-          });
-      } catch (err) {
-        axios
-          .post(`${process.env.REACT_APP_ENDPOINT}videos/getall`)
-          .then((res) => {
-            console.log(res.data.data);
-            setMovies(res.data.data);
-          });
-      }
-      getAllEpisode();
-    }
-  }, []);
+    axios
+      .post(`${process.env.REACT_APP_ENDPOINT}users/authen`, {
+        token: localStorage.getItem('token'),
+      })
+      .then((resa) => {
+        console.log(resa.permission)
+        if (resa.data.permission === 'not') {
+          localStorage.removeItem('token')
+        } else {
+          if (!resa.data.permission) {
+            window.location.href = '/'
+            return
+          }
+          setAllow(true)
+          try {
+            let value = decodeURI(window.location.search)
+              .split('?')[1]
+              .split('=')
+            axios
+              .post(`${process.env.REACT_APP_ENDPOINT}videos/search`, {
+                name: value[1].replace('+', ' '),
+              })
+              .then((res) => {
+                console.log(res.data.data)
+                setMovies(res.data.data)
+              })
+          } catch (err) {
+            axios
+              .post(`${process.env.REACT_APP_ENDPOINT}videos/getall`)
+              .then((res) => {
+                console.log(res.data.data)
+                setMovies(res.data.data)
+              })
+          }
+          getAllEpisode()
+        }
+      })
+  }, [])
 
   React.useEffect(() => {
-    const temp = process.env.REACT_APP_ENDPOINT.concat("image/temp.jpg");
+    const temp = process.env.REACT_APP_ENDPOINT.concat('image/temp.jpg')
     setFile({
       imageSrc: temp,
       imageHash: Date.now(),
-    });
-  }, [upload]);
+    })
+  }, [upload])
 
   const imageUpload = async () => {
-    setUpload(false);
-    var formData = new FormData();
-    var imagefile = document.querySelector("#file");
-    formData.append("imageUpload", imagefile.files[0]);
+    setUpload(false)
+    var formData = new FormData()
+    var imagefile = document.querySelector('#file')
+    formData.append('imageUpload', imagefile.files[0])
 
     axios
-      .post(process.env.REACT_APP_ENDPOINT.concat("imageUpload"), formData, {
+      .post(process.env.REACT_APP_ENDPOINT.concat('imageUpload'), formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       })
       .then((res) => {
-        if (res.data.messages !== "fail") {
-          console.log(res);
-          setUpload(true);
-          setIsChosen({ ...isChosen, image: "/image/temp.jpg" });
-          toast.success("Uploaded successfully", {
+        if (res.data.messages !== 'fail') {
+          console.log(res)
+          setUpload(true)
+          setIsChosen({ ...isChosen, image: '/image/temp.jpg' })
+          toast.success('Uploaded successfully', {
             autoClose: 2000,
-          });
+          })
           // setInterval(() => {
           //   window.location.reload();
           // }, 1000);
         } else {
-          toast.error("Please try again", {
+          toast.error('Please try again', {
             autoClose: 2000,
-          });
+          })
         }
-      });
-  };
+      })
+  }
   return (
     <div className="App bg-[#082032]">
       <NavBar />
@@ -241,7 +255,7 @@ function ChangeMovieInfoPage() {
               value={isChosen.name}
               required
               onChange={(e) => {
-                setIsChosen({ ...isChosen, name: e.target.value });
+                setIsChosen({ ...isChosen, name: e.target.value })
               }}
             />
           </div>
@@ -310,8 +324,8 @@ function ChangeMovieInfoPage() {
             <Button
               theme="bg-pink-600 rounded-[5px] w-28 h-10 text-white"
               onClick={() => {
-                setUpload(false);
-                imageUpload();
+                setUpload(false)
+                imageUpload()
               }}
             >
               UPLOAD
@@ -356,7 +370,7 @@ function ChangeMovieInfoPage() {
                 value={tagsChange[0]}
                 required
                 onChange={(e) => {
-                  setTagsChange([e.target.value, tagsChange[1], tagsChange[2]]);
+                  setTagsChange([e.target.value, tagsChange[1], tagsChange[2]])
                 }}
               >
                 {categoryType.map((option) => {
@@ -364,7 +378,7 @@ function ChangeMovieInfoPage() {
                     <option key={option.value} value={option.value}>
                       {option.text}
                     </option>
-                  );
+                  )
                 })}
               </select>
               <select
@@ -372,7 +386,7 @@ function ChangeMovieInfoPage() {
                 className=" mr-10 bg-[#082032] rounded-[5px] text-white border-2 border-white border-solid"
                 value={tagsChange[1]}
                 onChange={(e) => {
-                  setTagsChange([tagsChange[0], e.target.value, tagsChange[2]]);
+                  setTagsChange([tagsChange[0], e.target.value, tagsChange[2]])
                 }}
               >
                 {categoryType.map((option) => {
@@ -380,7 +394,7 @@ function ChangeMovieInfoPage() {
                     <option key={option.value} value={option.value}>
                       {option.text}
                     </option>
-                  );
+                  )
                 })}
               </select>
               <select
@@ -388,7 +402,7 @@ function ChangeMovieInfoPage() {
                 className=" mr-10 bg-[#082032] rounded-[5px] text-white border-2 border-white border-solid"
                 value={tagsChange[2]}
                 onChange={(e) => {
-                  setTagsChange([tagsChange[0], tagsChange[1], e.target.value]);
+                  setTagsChange([tagsChange[0], tagsChange[1], e.target.value])
                 }}
               >
                 {categoryType.map((option) => {
@@ -396,7 +410,7 @@ function ChangeMovieInfoPage() {
                     <option key={option.value} value={option.value}>
                       {option.text}
                     </option>
-                  );
+                  )
                 })}
               </select>
             </div>
@@ -414,11 +428,11 @@ function ChangeMovieInfoPage() {
                 className="mr-10 bg-[#082032] rounded-[5px] text-white border-2 border-white border-solid"
                 value={episodeChosen}
                 onChange={(e) => {
-                  setEpisodeChosen(e.target.value);
-                  if (e.target.value === "addNew") {
-                    setCreateEp(true);
+                  setEpisodeChosen(e.target.value)
+                  if (e.target.value === 'addNew') {
+                    setCreateEp(true)
                   } else {
-                    setCreateEp(false);
+                    setCreateEp(false)
                   }
                 }}
               >
@@ -428,7 +442,7 @@ function ChangeMovieInfoPage() {
                     <option key={each.id} value={each.eid}>
                       {each.collectionName}
                     </option>
-                  );
+                  )
                 })}
                 <option value="addNew">+ New Episode</option>
               </select>
@@ -518,21 +532,21 @@ function ChangeMovieInfoPage() {
                     vid={each.vid}
                     className="max-w-xs mt-8"
                     onClick={async (e) => {
-                      setIsChosen(each);
-                      setEpisodeChosen(each.haveEp);
-                      if (each.type.split(",").length > 0) {
-                        tagsChange[0] = each.type.split(",")[0];
+                      setIsChosen(each)
+                      setEpisodeChosen(each.haveEp)
+                      if (each.type.split(',').length > 0) {
+                        tagsChange[0] = each.type.split(',')[0]
                       }
-                      if (each.type.split(",").length > 1) {
-                        tagsChange[1] = each.type.split(",")[1];
+                      if (each.type.split(',').length > 1) {
+                        tagsChange[1] = each.type.split(',')[1]
                       }
-                      if (each.type.split(",").length > 2) {
-                        tagsChange[2] = each.type.split(",")[2];
+                      if (each.type.split(',').length > 2) {
+                        tagsChange[2] = each.type.split(',')[2]
                       }
-                      console.log(tagsChange);
+                      console.log(tagsChange)
                     }}
                   />
-                );
+                )
               })}
           </div>
         </div>
@@ -541,12 +555,12 @@ function ChangeMovieInfoPage() {
       <Footer />
       <ToastContainer />
     </div>
-  );
+  )
 }
 
 export default {
   routeProps: {
-    path: "/changemovie",
+    path: '/changemovie',
     main: ChangeMovieInfoPage,
   },
-};
+}

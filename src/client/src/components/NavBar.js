@@ -1,6 +1,6 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faMagnifyingGlass,
   faBars,
@@ -8,64 +8,59 @@ import {
   faHome,
   faListAlt,
   faSearch,
-} from "@fortawesome/free-solid-svg-icons";
-import { Button, Input } from "./";
-import NetflizLogo from "../assets/images/pink2-logo.png";
-import axios from "axios"
+} from '@fortawesome/free-solid-svg-icons'
+import { Button, Input } from './'
+import NetflizLogo from '../assets/images/pink2-logo.png'
+import axios from 'axios'
 const NavBar = ({ allowSearch = true }) => {
-  const [isLogin, setIsLogin] = React.useState(false);
-  const navigate = useNavigate();
-  const [showLinks, setShowLinks] = React.useState(false);
-  const [textInput, setTextInput] = React.useState("");
-  const [navbarOpen, setNavbarOpen] = React.useState(false);
+  const [isLogin, setIsLogin] = React.useState(false)
+  const navigate = useNavigate()
+  const [showLinks, setShowLinks] = React.useState(false)
+  const [textInput, setTextInput] = React.useState('')
+  const [navbarOpen, setNavbarOpen] = React.useState(false)
+  const [admin, setAdmin] = React.useState(false)
 
   const toggleLinks = () => {
-    setShowLinks(!showLinks);
+    setShowLinks(!showLinks)
     navigate({
-      pathname: "/profile",
-    });
-  };
+      pathname: '/profile',
+    })
+  }
 
   const submit = (e) => {
     navigate({
-      pathname: "/videos/search",
+      pathname: '/videos/search',
       search: `?name=${textInput}`,
-    });
-  };
+    })
+  }
 
   const navButton = () => {
-    setNavbarOpen(!navbarOpen);
-  };
+    setNavbarOpen(!navbarOpen)
+  }
 
   React.useEffect(() => {
-    
-    if(localStorage.getItem("token")!==null&&localStorage.getItem("token")!=="null")
-    {
+    if (
+      localStorage.getItem('token') !== null &&
+      localStorage.getItem('token') !== 'null'
+    ) {
       axios
-      .post(`${process.env.REACT_APP_ENDPOINT}users/authen`,{
-          token:localStorage.getItem("token")
-      }).then((resa)=>
-      {
-        console.log(resa.permission)
-        if(resa.data.permission==="not")
-        {
-          localStorage.removeItem('token')
-          setIsLogin(false)
-           
-          
-        }
-        else
-        {
-          setIsLogin(true)
-           
-   
-        }
-      
-      
-      })
+        .post(`${process.env.REACT_APP_ENDPOINT}users/authen`, {
+          token: localStorage.getItem('token'),
+        })
+        .then((resa) => {
+          console.log(resa.permission)
+          if (resa.data.permission === 'not') {
+            localStorage.removeItem('token')
+            setIsLogin(false)
+          } else {
+            if (resa.data.permission === true) {
+              setAdmin(true)
+            }
+            setIsLogin(true)
+          }
+        })
     }
-  
-  }, [localStorage]);
+  }, [localStorage])
 
   return (
     <div className="fixed top-0 overflow-hidden w-full z-10">
@@ -81,14 +76,14 @@ const NavBar = ({ allowSearch = true }) => {
             src={NetflizLogo}
             className="logo w-[140px] max-[800px]:hidden max-w-none cursor-pointer"
             alt="logo"
-            onClick={() => navigate({ pathname: "/" })}
+            onClick={() => navigate({ pathname: '/' })}
           />
 
           <Button
             theme={
-              "bg-opacity-100 mb-2 mt-3 text-2xl max-[800px]:hidden font-button text-[#CD0574]"
+              'bg-opacity-100 mb-2 mt-3 text-2xl max-[800px]:hidden font-button text-[#CD0574]'
             }
-            onClick={() => navigate({ pathname: "/categories" })}
+            onClick={() => navigate({ pathname: '/categories' })}
           >
             Category
           </Button>
@@ -102,7 +97,7 @@ const NavBar = ({ allowSearch = true }) => {
                 inputTheme="p-4 h-10 max-2w-xl w-auto bg-black bg-opacity-25 "
                 placeholder="Input movie name or category"
                 containerTheme="pt-2 mb-2 w-full bg-opacity-25"
-                textColor={"white"}
+                textColor={'white'}
                 name="name"
                 onChange={(e) => setTextInput(e.target.value)}
               ></Input>
@@ -121,33 +116,38 @@ const NavBar = ({ allowSearch = true }) => {
           <div className="flex flex-row">
             <Button
               theme={
-                "bg-gray-200 p-1 my-2 mr-5 w-20 rounded-md text-2xl font-button text-[#CD0574]"
+                'bg-gray-200 p-1 my-2 mr-5 w-20 rounded-md text-2xl font-button text-[#CD0574]'
               }
-              onClick={() => navigate({ pathname: "/login" })}
+              onClick={() => navigate({ pathname: '/login' })}
             >
               LOGIN
             </Button>
             <Button
               theme={
-                "bg-[#CD0574] p-1 my-2 mr-5 w-20 rounded-md text-2xl font-button text-gray-200"
+                'bg-[#CD0574] p-1 my-2 mr-5 w-20 rounded-md text-2xl font-button text-gray-200'
               }
-              onClick={() => navigate({ pathname: "/signup" })}
+              onClick={() => navigate({ pathname: '/signup' })}
             >
               SIGNUP
             </Button>
           </div>
         ) : isLogin === true ? (
           <div className="flex flex-row mr-2">
-            <Button
-              theme={
-                "bg-[#CD0574] p-1 my-2 mr-5 w-20 rounded-md text-2xl font-button text-gray-200"
-              }
-              onClick={() => {
-                navigate({ pathname: "/admin" });
-              }}
-            >
-              Admin
-            </Button>
+            {admin === true ? (
+              <Button
+                theme={
+                  'bg-[#CD0574] p-1 my-2 mr-5 w-20 rounded-md text-2xl font-button text-gray-200'
+                }
+                onClick={() => {
+                  navigate({ pathname: '/admin' })
+                }}
+              >
+                Admin
+              </Button>
+            ) : (
+              <div></div>
+            )}
+
             <button className="nav-toggle" onClick={toggleLinks}>
               <FontAwesomeIcon icon={faCircleUser} inverse size="2x" />
             </button>
@@ -158,7 +158,7 @@ const NavBar = ({ allowSearch = true }) => {
       </div>
       <ul
         className={`menu-nav w-full ${
-          navbarOpen ? "max-[800px]:show-menu" : "hidden"
+          navbarOpen ? 'max-[800px]:show-menu' : 'hidden'
         }`}
       >
         <li className="menu-item">
@@ -188,6 +188,6 @@ const NavBar = ({ allowSearch = true }) => {
         </li>
       </ul>
     </div>
-  );
-};
-export { NavBar };
+  )
+}
+export { NavBar }
