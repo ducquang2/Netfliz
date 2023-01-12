@@ -28,7 +28,7 @@ function MovieInfoPage() {
   const [added, setAdded] = React.useState(false)
   const search = useLocation().search
   const navigate = useNavigate()
-  const [uid, setUid] = React.useState('')
+  const [uid, setUid] = React.useState(null)
   const watchingAccessing = () => {
     navigate(`/watch?vid=${new URLSearchParams(search).get('vid')}`)
   }
@@ -81,6 +81,16 @@ function MovieInfoPage() {
     }
   }
   React.useEffect(() => {
+    if (uid === null) return
+    axios
+      .post(`${process.env.REACT_APP_ENDPOINT}userinfo/get`, {
+        uid: uid,
+      })
+      .then((res) => {
+        setInfo(res.data.data)
+      })
+  }, [uid])
+  React.useEffect(() => {
     if (
       localStorage.getItem('token') !== null &&
       localStorage.getItem('token') !== 'null'
@@ -114,7 +124,7 @@ function MovieInfoPage() {
             position: 'bottom-left',
           })
         } else {
-          toast.error('Add fail, please try again', {
+          toast.error('Add failed, please try again', {
             autoClose: 2000,
             position: 'bottom-left',
           })
