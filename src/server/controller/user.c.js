@@ -403,7 +403,8 @@ module.exports = {
         outputLength: hashLength * 4,
       }).toString(CryptoJS.enc.Hex)
 
-      const rs = await userM.loginUser(username, hashedPassword)
+
+      const rs = await userM.loginUser(username, password)
       console.log(rs)
       let change = false
       const reg = await userM.getUser({ uid: rs.uid })
